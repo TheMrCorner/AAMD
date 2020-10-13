@@ -1,5 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import time as t 
+
 
 def funcion(x):
     return x + 1
@@ -27,12 +29,18 @@ def integraL(fun, a, b, num_puntos=1000):
     ry = gen_puntos(0, max(y), num_puntos)
 
     a = 0
+    #comienza el cronometro
+    inicio = t.process_time()
     for i in range(num_puntos):
         if ry[i] < y[i]:
             a += 1
-
+    #detiene el cronometro
+    fin = t.process_time()
     print(a)
-    print(t.process_time())
+    #tiempo que ha tardado
+    tiempo = 1000 * (fin- inicio)
+    print(tiempo)
+    return tiempo
     #a = gen_puntos(num_puntos)
 
 def integraR(fun, a, b, num_puntos=1000):
@@ -44,20 +52,34 @@ def integraR(fun, a, b, num_puntos=1000):
     # Puntos random, coordenada X
     #rx = gen_puntos(a, b, num_puntos)
     ry = gen_puntos(0, max(y), num_puntos)
-
+    #comienza el cronometro
+    inicio = t.process_time()
     # Método rápido
     res = np.sum(ry < y)
+    #detiene el cronometro
+    fin = t.process_time()
     print(res)
-    print(t.process_time())
-
+    #tiempo que ha tardado
+    tiempo = 1000 * (fin- inicio)
+    print(tiempo)
+    return tiempo
     #a = gen_puntos(num_puntos)
 
+#crea una tuple de cantidades de puntos con los que va a probar
+sizes = np.linspace(1000, 1000000, 5)
+tiempo_bucle = []
+tiempo_numpy = []
+#calcula el tiempo de los algoritmos para todas las cantidades de puntos
+for size in sizes:
+    tiempo_bucle += [integraL(funcion, 2, 8, int(size))]
+    tiempo_numpy += [integraR(funcion, 2, 8, int(size))]
 
-integraL(funcion, 2, 8, 10000000)
-t.perf_counter()
-integraR(funcion, 2, 8, 10000000)
-t.perf_counter()
-
+#dibuja el resultado
+plt.figure()
+plt.scatter(sizes, tiempo_bucle, c='red', label='bucle')
+plt.scatter(sizes, tiempo_numpy, c='blue', label='vector')
+plt.legend()
+plt.show()
 
 #hay que usar sum(y < f(x)) para la versión vectorizada
 
