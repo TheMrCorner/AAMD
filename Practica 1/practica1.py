@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time as t 
 from pandas.io.parsers import read_csv
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 #funcion para cagar ficheros csv
 def carga_csv(file_name):
@@ -28,7 +31,23 @@ def descenso_gradiente(X, Y, alpha):
     theta = [theta0, theta1]
     print(theta)
     costes = coste(X, Y, theta)
-    return theta, coste
+    return theta, costes
+
+def make_data(t0_range, t1_range, X, Y):
+    Theta0 = []
+    Theta1 = []
+    Coste = []
+    step = 0.1
+    Theta0 = np.arange(t0_range[0], t0_range[1], step)
+    Theta1 = np.arange(t1_range[0], t1_range[1], step)
+    Theta0, Theta1 = np.meshgrid(Theta0, Theta1)
+    # Theta0 y Theta1 tienen las misma dimensiones, de forma que
+    # cogiendo un elemento de cada uno se generan las coordenadas x,y
+    # de todos los puntos de la rejilla
+    Coste = np.empty_like(Theta0)
+    for ix, iy in np.ndindex(Theta0.shape):
+        Coste[ix, iy] = coste(X, Y, [Theta0[ix, iy], Theta1[ix, iy]])
+    return [Theta0, Theta1, Coste]
 
 datos = carga_csv("C:\hlocal\AAMD\Practica 1\datos.csv")
 X = datos[:, :-1]
@@ -43,9 +62,17 @@ m = np.shape(X)[0]
 X = np.hstack([np.ones([m, 1]), X])
 alpha = 0.01
 Thetas, costes = descenso_gradiente(X, Y, alpha)
-min_x = np.min([n[1] for n in X])
+n = [n[1] for n in X]
+min_x = np.min(n)
 max_x = np.max(X)
 min_y = Thetas[0] + Thetas[1] * min_x
 max_y = Thetas[0] + Thetas[1] * max_x
 plt.plot([min_x, max_x], [min_y, max_y])
+
+t0_range = [-10,10]
+t1_range = [-1,4]
+X, Y, Z = make_data(t0_range, t1_range,X, Y)
+fig = plt.figure()
+ax = fig.gca(projection = '3d')
+surf = ax.plot_surface(X, Y, Z, cmap = cm.jet, linewidth =0, antialiased = False)
 plt.show()
