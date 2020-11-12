@@ -20,9 +20,8 @@ def descenso_gradiente(X, Y, alpha):
         sumatorioT0 = 0
         sumatorioT1 = 0
         for i in range(len(X)):
-            H = theta0 * X[i,1]
+            H = theta0 + theta1* X[i,1]
             sumatorioT0 += (H - Y[i])
-            H = theta1 * X[i,1]
             sumatorioT1 += (H - Y[i])*X[i,1]
         theta0 = theta0 - alpha*(sumatorioT0/len(X))
         theta1 = theta1 - alpha*(sumatorioT1/len(X))
@@ -36,10 +35,17 @@ X = datos[:, :-1]
 np.shape(X)         # (97, 1)
 Y = datos[:, -1]
 np.shape(Y)         # (97,)
+plt.figure()
+plt.scatter(X ,Y, marker='x', c='r')
 m = np.shape(X)[0]
-n = np.shape(X)[1]
 # añadimos una columna de 1's a la X
 # esto es para que se pueda multiplicar x por el vector theta
 X = np.hstack([np.ones([m, 1]), X])
 alpha = 0.01
 Thetas, costes = descenso_gradiente(X, Y, alpha)
+min_x = np.min([n[1] for n in X])
+max_x = np.max(X)
+min_y = Thetas[0] + Thetas[1] * min_x
+max_y = Thetas[0] + Thetas[1] * max_x
+plt.plot([min_x, max_x], [min_y, max_y])
+plt.show()
