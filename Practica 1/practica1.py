@@ -15,6 +15,22 @@ def coste(X, Y, Theta):
     Aux = (H - Y) ** 2
     return Aux.sum() / (2 * len(X))
 
+def draw_3D(X, Y, Z):
+    fig = plt.figure()
+    ax = fig.gca(projection = '3d')
+    surf = ax.plot_surface(X, Y, Z, cmap = cm.jet, linewidth =0, antialiased = False)
+
+
+def draw_2D(X, Y, a, b):
+    plt.figure()
+    plt.scatter(X ,Y, marker='x', c='r')
+    plt.plot(a, b)
+
+def draw_cont(Theta0, Theta1, Coste, min):
+    fig = plt.figure()
+    plt.contour(Theta0, Theta1, Coste, np.logspace(-4, 6, 40), cmap = cm.jet)
+    plt.scatter(min[0], min[1], marker='x', c='r')
+
 #inicializar theta0 a 0, theta1 a 0, bucle 1500 iteraciones-> aplicar la formula que calcula el nuevo theta0, theta1 a partir de los anteriores
 def descenso_gradiente(X, Y, alpha):
     theta0 = 0
@@ -49,16 +65,17 @@ def make_data(t0_range, t1_range, X, Y):
         Coste[ix, iy] = coste(X, Y, [Theta0[ix, iy], Theta1[ix, iy]])
     return [Theta0, Theta1, Coste]
 
-datos = carga_csv("C:\hlocal\AAMD\Practica 1\datos.csv")
+datos = carga_csv("C:/Users/alper/Workspace/Universidad/PythonCosas/AAMD/Practica 1/datos.csv")
+# Data loading
 X = datos[:, :-1]
 np.shape(X)         # (97, 1)
 Y = datos[:, -1]
 np.shape(Y)         # (97,)
-plt.figure()
-plt.scatter(X ,Y, marker='x', c='r')
+
 m = np.shape(X)[0]
 # añadimos una columna de 1's a la X
 # esto es para que se pueda multiplicar x por el vector theta
+tempx = X
 X = np.hstack([np.ones([m, 1]), X])
 alpha = 0.01
 Thetas, costes = descenso_gradiente(X, Y, alpha)
@@ -67,12 +84,11 @@ min_x = np.min(n)
 max_x = np.max(X)
 min_y = Thetas[0] + Thetas[1] * min_x
 max_y = Thetas[0] + Thetas[1] * max_x
-plt.plot([min_x, max_x], [min_y, max_y])
+draw_2D(tempx, Y, [min_x, max_x], [min_y, max_y])
 
 t0_range = [-10,10]
 t1_range = [-1,4]
 X, Y, Z = make_data(t0_range, t1_range,X, Y)
-fig = plt.figure()
-ax = fig.gca(projection = '3d')
-surf = ax.plot_surface(X, Y, Z, cmap = cm.jet, linewidth =0, antialiased = False)
+draw_3D(X, Y, Z)
+draw_cont(X, Y, Z, [min_x, min_y])
 plt.show()
