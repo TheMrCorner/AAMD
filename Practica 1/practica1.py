@@ -31,7 +31,8 @@ def draw_cont(Theta0, Theta1, Coste, min):
     plt.contour(Theta0, Theta1, Coste, np.logspace(-4, 6, 40), cmap = cm.jet)
     plt.scatter(min[0], min[1], marker='x', c='r')
 
-#inicializar theta0 a 0, theta1 a 0, bucle 1500 iteraciones-> aplicar la formula que calcula el nuevo theta0, theta1 a partir de los anteriores
+#inicializar theta0 a 0, theta1 a 0, bucle 1500 iteraciones-> aplicar la formula que calcula el nuevo theta0, 
+# theta1 a partir de los anteriores
 def descenso_gradiente(X, Y, alpha):
     theta0 = 0
     theta1 = 1
@@ -65,7 +66,7 @@ def make_data(t0_range, t1_range, X, Y):
         Coste[ix, iy] = coste(X, Y, [Theta0[ix, iy], Theta1[ix, iy]])
     return [Theta0, Theta1, Coste]
 
-datos = carga_csv("C:/Users/alper/Workspace/Universidad/PythonCosas/AAMD/Practica 1/datos.csv")
+datos = carga_csv(r"F:\UniShit\Repos\AAMD\Practica 1\ex1data2.csv")
 # Data loading
 X = datos[:, :-1]
 np.shape(X)         # (97, 1)
