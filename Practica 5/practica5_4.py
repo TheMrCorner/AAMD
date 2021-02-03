@@ -54,7 +54,7 @@ def pinta2(m, errorTrain, errorVal):
     plt.plot(m, errorVal, 'g', label='Cross Validation')
     plt.legend()    
 
-data = loadmat(r"F:\UniShit\Repos\AAMD\Practica 5\ex5data1.mat")
+data = loadmat("ex5data1.mat")
 
 y = data['y']
 X = data['X']
