@@ -20,6 +20,7 @@ testSizeRL = 0.8
 input_layer_size = 31
 hidden_layer_size = 25
 num_etiquetas = 2
+lamb = 1000
 #Support Vector Machine
 numIteraciones = 1
 _C = 100
@@ -73,7 +74,7 @@ def RegresionLogistica(X, Y):
         result = opt.fmin_tnc(func=coste,x0=theta ,fprime=gradienteRL,args =(x_train, y_train))
         theta = result[0]
         
-        accuracy += evalua(theta,x_test,y_test)
+        accuracy += evalua(theta,x_test,y_test)                            
     print("Avg. Accuracy: ",format((accuracy / numPruebas)* 100, '.2f' ),"%")
     return accuracy
 
@@ -87,7 +88,7 @@ def RedNeuronal(X, Y):
     thetas2 = randomizeThetas(hidden_layer_size,num_etiquetas)
 
     result = minimize(fun=backprop, x0=np.append(thetas1,thetas2), args=(input_layer_size, hidden_layer_size,
-    num_etiquetas, X, y_onehot,1000 ), method = 'TNC', jac = True, options = {'maxiter': 500, 'disp':True})
+    num_etiquetas, X, y_onehot,lamb ), method = 'TNC', jac = True, options = {'maxiter': 500, 'disp':True})
     theta1,theta2 = unroll_thetas(result.x,input_layer_size,hidden_layer_size,num_etiquetas)
     X = add_ones(X)
     h = forward_propagate(X, theta1, theta2)[4]
@@ -113,6 +114,9 @@ def SupportVectorMachine(X, Y):
     precision = 0
     for x in range(0, numIteraciones):
         X_new, Xval, y_new, Yval = train_test_split(X, Y, test_size = 0.2,shuffle = True)
+        #USAR ESTO PARA KERNEL LINEAL
+        #svm = SVC(kernel = 'linear', C = valorC)
+        #USAR ESTO PARA KERNEL GAUSSIANO
         svm = SVC(kernel = 'rbf', C = _C, gamma = 1 / (2 * Sigma **2))
         svm.fit(X_new, y_new)
         precision += test(svm, Xval, Yval)
