@@ -22,12 +22,12 @@ def main():
     print(tags)
     print(valores[:2,:])
     accuracy = 0.0
-    NUM_PRUEBAS = 1
+    NUM_PRUEBAS = 5
     for i in range(NUM_PRUEBAS):
-        np.random.shuffle(valores)
+        np.random.shuffle(X)
         #Vamos a separar los ejemplos en 80% para entrenar y un 20% para evaluar
         X = add_ones(X)
-        x_train, x_test, y_train, y_test = train_test_split(X,Y,test_size = 0.9,shuffle = True)
+        x_train, x_test, y_train, y_test = train_test_split(X,Y,test_size = 0.8,shuffle = True)
         theta = np.zeros((X.shape[1],1))
         result = opt.fmin_tnc(func=coste,x0=theta ,fprime=gradiente,args =(x_train, y_train))
         theta = result[0]
@@ -35,8 +35,6 @@ def main():
         accuracy += evalua(theta,x_test,y_test)
     print("Avg. Accuracy: ",format((accuracy / NUM_PRUEBAS)* 100, '.2f' ),"%")
     #print(X)
-def H(X,thetha):
-    return sigmoid(np.matmul(X,thetha))
 
 def coste(thetha,X,Y):
     h = sigmoid(np.matmul(X,thetha))
